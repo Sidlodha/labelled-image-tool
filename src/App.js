@@ -1,25 +1,64 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import customTheme from "./theme";
+import { ThemeProvider } from "@chakra-ui/core";
+import ApolloClient from "apollo-client";
+import { ApolloProvider } from "@apollo/react-hooks";
+import { HttpLink } from "apollo-link-http";
+import { split } from "apollo-link";
+import { getMainDefinition } from "apollo-utilities";
+import { InMemoryCache } from "apollo-cache-inmemory";
+import { WebSocketLink } from "apollo-link-ws";
+import Transfer from "./LabelledImage/transfer"
+import Routes from "./routes";
+const httpLink = new HttpLink({
+  uri: "https://uplara.herokuapp.com/v1/graphql",
+  headers: {
+    "x-hasura-admin-secret": "Labeling93*"
+  } // use https for secure endpoint
+});
+
+// Create a WebSocket link:
+const wsLink = new WebSocketLink({
+  uri: "wss://uplara.herokuapp.com/v1/graphql",
+  headers: {
+    "x-hasura-admin-secret": "Labeling93*"
+  }, // use wss for a secure endpoint
+  options: {
+    reconnect: true
+  }
+});
+// using the ability to split links, you can send data to each link
+// depending on what kind of operation is being sent
+const link = split(
+  // split based on operation type
+  ({ query }) => {
+    const { kind, operation } = getMainDefinition(query);
+    return kind === "OperationDefinition" && operation === "subscription";
+  },
+  wsLink,
+  httpLink
+);
+
+// Instantiate client
+const client = new ApolloClient({
+  link,
+  cache: new InMemoryCache({
+    addTypename: false
+  })
+});
 
 function App() {
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ApolloProvider client={client}>
+        <ThemeProvider theme={customTheme}>
+          <div className="App">
+            <Routes />
+          </div>
+        </ThemeProvider>
+    </ApolloProvider>
   );
 }
 
