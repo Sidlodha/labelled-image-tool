@@ -43,15 +43,29 @@ function Home(props) {
         },
       },
     ],
+    onCompleted(data){
+      if(data){
+        props.nextImage();
+      }
+    },
+    onError(error){
+      alert(`The form did not submit. Please check your internet connection. \n For Technical Purpose : ${error}`)
+    }
   });
   const onInputChange = (e) => {
     setFormFields({ ...formFields, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
-    console.log("Submit");
-    if (formFields.occluded) {
-      submitData({
+  const handleSubmit = async () => {
+    if(!picData && !product_images[parseInt(props.props.match.params.imageid)].segmented_image){
+      alert("Please save the segmented image.")
+      return
+    }
+    if(formFields.occluded=="" || formFields.sleeves=="" || formFields.tuckedIn==""){
+      alert("Please fill all the details.")
+      return
+    }
+      await submitData({
         variables: {
           product_id: props.props.match.params.productid,
           image_id:
@@ -62,10 +76,6 @@ function Home(props) {
           tuckedIn: formFields.tuckedIn,
         },
       });
-      props.nextImage();
-    } else {
-      alert("Please Fill the required Details");
-    }
   };
 
   const linkChange = (link) => {
@@ -241,7 +251,7 @@ function Home(props) {
                 pred_decider={formFields.pred_decider}
                 setPicData={setPicData}
                 product_id={parseInt(props.props.match.params.productid)}
-                image_id={parseInt(props.props.match.params.imageid)}
+                image_id={product_images[parseInt(props.props.match.params.imageid)].image_id}
                 canvas_name={"canvas_1"}
               />
             </div>

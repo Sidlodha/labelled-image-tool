@@ -19,14 +19,12 @@ const MapPoints = (props) => {
   const [dataUrl, setDataUrl] = useState("");
   const [save_image] = useMutation(SAVE_IMAGE, {
     onCompleted(data) {
-      console.log('sve front')
       setPicData(dataUrl);
       setSavedImg(true);
     },
   });
   const [save_extra_image] = useMutation(SAVE_EXTRA_IMAGE, {
     onCompleted(data) {
-      console.log('comes here')
       setPicData(dataUrl);
       setSavedImg(true);
     },
@@ -52,7 +50,6 @@ const MapPoints = (props) => {
         let imgwidth = imageObj.offsetWidth;
         let imgheight = imageObj.offsetHeight;
         SCALE = 0;
-        console.log(imageObj);
         ctx.drawImage(imageObj, 0, 0, imgwidth, imgheight, 0, 0, SIZEX, SIZEY);
       }
     }
@@ -75,7 +72,6 @@ const MapPoints = (props) => {
       if (imageObj) {
         let imgwidth = imageObj.offsetWidth;
         let imgheight = imageObj.offsetHeight;
-        console.log(imgheight, imgwidth);
         ctx.drawImage(imageObj, 0, 0, imgwidth, imgheight, 0, 0, SIZEX, SIZEY);
       }
     }
@@ -149,10 +145,8 @@ const MapPoints = (props) => {
 
   const capturePoint = (evt) => {
     const mousePos = getMousePos(canvasRef, evt);
-    console.log(mousePos);
     const temp = points;
     temp[activeIndex].push(mousePos);
-    console.log(temp);
     setPoints(temp);
     setPenultimatePoint(lastPoint);
     setLastPoint(mousePos);
@@ -173,7 +167,6 @@ const MapPoints = (props) => {
     if(points[activeIndex].length===1){
       if(activeIndex>0){
         const temp = points.slice(0, points.length - 1)
-        console.log(temp)
         setToggle(false)
         setPoints([...temp])
         setLastPoint(points[activeIndex-1][points[activeIndex-1].length - 1])
@@ -211,7 +204,6 @@ const MapPoints = (props) => {
       if (imageObj) {
         let imgwidth = imageObj.offsetWidth;
         let imgheight = imageObj.offsetHeight;
-        console.log(imgheight, imgwidth);
         ctx.drawImage(imageObj, 0, 0, imgwidth, imgheight, 0, 0, SIZEX, SIZEY);
       }
     }
