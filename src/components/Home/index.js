@@ -44,13 +44,30 @@ function App(props) {
       product_id: id,
     },
     // skip: !validId,
+    onError(error){
+      alert(`Please check your internet connection. \n  For technical Purpose: ${error}`)
+    },
     onCompleted(data) {
       if (data && data.product_images) {
         setNumOfImages(data.product_images.length);
+        data.product_images.map(product => {
+          fetch(linkChange(product.image_url))
+        })
       }
     },
   });
 
+  const linkChange = (link) => {
+    if (link === undefined) {
+      return undefined;
+    } else {
+      return `https://storage.googleapis.com/download/storage/v1/b/${
+        link.split("/")[3]
+      }/o/${link
+        .substring(34 + link.split("/")[3].length)
+        .replace(/[/]/g, "%2F")}?alt=media`;
+    }
+  };
   const handleNext = () => {
     if (activeImageId < numOfImages - 1) {
       history.push(

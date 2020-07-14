@@ -232,7 +232,7 @@ export const UPDATE_PERSON_DATA = gql`
   ) {
     update_product_images(
       where: { product_id: { _eq: $product_id }, image_id: { _eq: $image_id } }
-      _set: { occludedBy: $occludedBy, tuckedIn: $tuckedIn, sleeves: $sleeves }
+      _set: { occludedBy: $occludedBy, tuckedIn: $tuckedIn, sleeves: $sleeves, topwear_viewed: "Yes" }
     ) {
       affected_rows
     }

@@ -11,23 +11,25 @@ import ModelOutput from "../OutputCorrector";
 function Home(props) {
   const { product_images } = props;
   const [formFields, setFormFields] = useState({
-    occluded: "",
-    one_product: product_images
+    occluded: product_images
       ? product_images[props.props.match.params.imageid]
         ? product_images[props.props.match.params.imageid].occludedBy
-        : ""
-      : "",
+          ? product_images[props.props.match.params.imageid].occludedBy
+          : "No"
+        : "No"
+      : "No",
+    one_product: "Yes",
     sleeves: product_images
       ? product_images[props.props.match.params.imageid]
         ? product_images[props.props.match.params.imageid].sleeves
-        : ""
-      : "",
+        : "No"
+      : "No",
     tuckedIn: product_images
       ? product_images[props.props.match.params.imageid]
         ? product_images[props.props.match.params.imageid].tuckedIn
-        : ""
-      : "",
-    pred_decider: "Yes",
+        : "No"
+      : "No",
+    pred_decider: "No",
     extra_pred_decider: "Yes",
   });
   const [showDropdown, setShowDropDown] = useState(false);
@@ -43,39 +45,50 @@ function Home(props) {
         },
       },
     ],
-    onCompleted(data){
-      if(data){
+    onCompleted(data) {
+      if (data) {
         props.nextImage();
       }
     },
-    onError(error){
-      alert(`The form did not submit. Please check your internet connection. \n For Technical Purpose : ${error}`)
-    }
+    onError(error) {
+      alert(
+        `The form did not submit. Please check your internet connection. \n For Technical Purpose : ${error}`
+      );
+    },
   });
   const onInputChange = (e) => {
     setFormFields({ ...formFields, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
-    if(!picData && !product_images[parseInt(props.props.match.params.imageid)].segmented_image){
-      alert("Please save the segmented image.")
-      return
+    if (
+      formFields.occluded != "No" &&
+      !picData &&
+      !product_images[parseInt(props.props.match.params.imageid)]
+        .segmented_image
+    ) {
+      alert("Please save the segmented image.");
+      return;
     }
-    if(formFields.occluded=="" || formFields.sleeves=="" || formFields.tuckedIn==""){
-      alert("Please fill all the details.")
-      return
+    if (
+      formFields.occluded == "" ||
+      formFields.sleeves == "" ||
+      formFields.tuckedIn == ""
+    ) {
+      alert("Please fill all the details.");
+      return;
     }
-      await submitData({
-        variables: {
-          product_id: props.props.match.params.productid,
-          image_id:
-            product_images &&
-            product_images[props.props.match.params.imageid].image_id,
-          occludedBy: formFields.occluded,
-          sleeves: formFields.sleeves,
-          tuckedIn: formFields.tuckedIn,
-        },
-      });
+    await submitData({
+      variables: {
+        product_id: props.props.match.params.productid,
+        image_id:
+          product_images &&
+          product_images[props.props.match.params.imageid].image_id,
+        occludedBy: formFields.occluded,
+        sleeves: formFields.sleeves,
+        tuckedIn: formFields.tuckedIn,
+      },
+    });
   };
 
   const linkChange = (link) => {
@@ -94,10 +107,11 @@ function Home(props) {
     if (product_images) {
       setFormFields({
         occluded:
-          product_images[props.props.match.params.imageid].occludedBy || "",
+          product_images[props.props.match.params.imageid].occludedBy || "No",
         tuckedIn:
-          product_images[props.props.match.params.imageid].tuckedIn || "",
-        sleeves: product_images[props.props.match.params.imageid].sleeves || "",
+          product_images[props.props.match.params.imageid].tuckedIn || "No",
+        sleeves:
+          product_images[props.props.match.params.imageid].sleeves || "No",
       });
     }
     if (
@@ -116,6 +130,15 @@ function Home(props) {
       setEdit(false);
     }
   }, [product_images, props.props.match.params.imageid]);
+
+  const clickAutoFill = () => {
+    setFormFields({
+      occluded: "No",
+      one_product: "Yes",
+      sleeves: "No",
+      tuckedIn: "No",
+    });
+  };
 
   return (
     <div style={{ display: "flex", padding: "0px 10px" }}>
@@ -140,7 +163,7 @@ function Home(props) {
         <form>
           <FormControl>
             <FormLabel htmlFor="one_product">
-              Is there only one product in the image ?
+              Is there only one topwear in the image ?
             </FormLabel>
             <Select
               name="one_product"
@@ -163,6 +186,7 @@ function Home(props) {
               <option value="Arm">By Arm</option>
               <option value="Hair">By hair</option>
               <option value="Others">Others</option>
+              <option value="No">No</option>
             </Select>
           </FormControl>
           <FormControl>
@@ -189,23 +213,13 @@ function Home(props) {
               <option value="No">No</option>
             </Select>
           </FormControl>
-          {formFields.occluded !== "" && (
-            <FormControl>
-              <FormLabel htmlFor="pred_decider">
-                Is the Front Prediction Good ?
-              </FormLabel>
-              <Select
-                name="pred_decider"
-                placeholder="Select option"
-                value={formFields.pred_decider}
-                onChange={onInputChange}
-              >
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-                <option value="Yes Mod">Yes, but needs to be Modified</option>
-              </Select>
-            </FormControl>
-          )}
+          {/* <Button
+            variantColor="green"
+            style={{ margin: "10px" }}
+            onClick={clickAutoFill}
+          >
+            Autofill & Submit
+          </Button> */}
           <Button
             onClick={handleSubmit}
             variantColor="green"
@@ -213,9 +227,7 @@ function Home(props) {
           >
             Submit
           </Button>
-          <Button onClick={props.nextImage}
-           style={{ margin: "10px" }}
-          >
+          <Button onClick={props.nextImage} style={{ margin: "10px" }}>
             Next
           </Button>
           {edit && (
@@ -230,7 +242,7 @@ function Home(props) {
         </form>
       </Box>
       <Box>
-        {!edit && formFields.occluded && (
+        {!edit && formFields.occluded && (formFields.occluded != "No" && formFields.occluded!="Others") && (
           <div style={{ display: "flex" }}>
             <div>
               <div>FRONT</div>
@@ -248,10 +260,14 @@ function Home(props) {
                 }
                 load={product_images && product_images.length > 0}
                 isOccluded={formFields.occluded}
-                pred_decider={formFields.pred_decider}
+                pred_decider={"No"}
                 setPicData={setPicData}
                 product_id={parseInt(props.props.match.params.productid)}
-                image_id={product_images[parseInt(props.props.match.params.imageid)].image_id}
+                image_id={
+                  product_images && 
+                  product_images[parseInt(props.props.match.params.imageid)]
+                    .image_id
+                }
                 canvas_name={"canvas_1"}
               />
             </div>

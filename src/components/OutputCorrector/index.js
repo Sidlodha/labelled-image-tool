@@ -63,7 +63,6 @@ const App = (props) => {
   }, [isOccluded]);
   useEffect(() => {
     if (isOccluded !== "") {
-      console.log(pred_decider);
       if (pred_decider == "No") {
       }
     }
