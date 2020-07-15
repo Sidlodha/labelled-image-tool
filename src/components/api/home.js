@@ -218,6 +218,8 @@ export const GET_ALL_IMAGES = gql`
       occludedBy
       tuckedIn
       sleeves
+      topwear_viewed
+      one_product
     }
   }
 `;
@@ -229,10 +231,11 @@ export const UPDATE_PERSON_DATA = gql`
     $occludedBy: String!
     $tuckedIn: String!
     $sleeves: String!
+    $one_product: String!
   ) {
     update_product_images(
       where: { product_id: { _eq: $product_id }, image_id: { _eq: $image_id } }
-      _set: { occludedBy: $occludedBy, tuckedIn: $tuckedIn, sleeves: $sleeves, topwear_viewed: "Yes" }
+      _set: { occludedBy: $occludedBy, tuckedIn: $tuckedIn, sleeves: $sleeves, topwear_viewed: "Yes", one_product: $one_product }
     ) {
       affected_rows
     }

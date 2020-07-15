@@ -18,7 +18,11 @@ function Home(props) {
           : "No"
         : "No"
       : "No",
-    one_product: "Yes",
+    one_product: product_images
+    ? product_images[props.props.match.params.imageid]
+      ? product_images[props.props.match.params.imageid].sleeves
+      : "Yes"
+    : "Yes",
     sleeves: product_images
       ? product_images[props.props.match.params.imageid]
         ? product_images[props.props.match.params.imageid].sleeves
@@ -60,9 +64,10 @@ function Home(props) {
     setFormFields({ ...formFields, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (defaultValues = false) => {
     if (
       formFields.occluded != "No" &&
+      formFields.occluded!="Others" && 
       !picData &&
       !product_images[parseInt(props.props.match.params.imageid)]
         .segmented_image
@@ -73,7 +78,8 @@ function Home(props) {
     if (
       formFields.occluded == "" ||
       formFields.sleeves == "" ||
-      formFields.tuckedIn == ""
+      formFields.tuckedIn == "" ||
+      formFields.one_product == ""
     ) {
       alert("Please fill all the details.");
       return;
@@ -87,6 +93,7 @@ function Home(props) {
         occludedBy: formFields.occluded,
         sleeves: formFields.sleeves,
         tuckedIn: formFields.tuckedIn,
+        one_product: formFields.one_product
       },
     });
   };
@@ -112,6 +119,8 @@ function Home(props) {
           product_images[props.props.match.params.imageid].tuckedIn || "No",
         sleeves:
           product_images[props.props.match.params.imageid].sleeves || "No",
+        one_product:
+          product_images[props.props.match.params.imageid].one_product || "Yes",
       });
     }
     if (
@@ -125,6 +134,7 @@ function Home(props) {
         tuckedIn:
           product_images[props.props.match.params.imageid].tuckedIn || "",
         sleeves: product_images[props.props.match.params.imageid].sleeves || "",
+        one_product: product_images[props.props.match.params.imageid].one_product || "Yes",
       });
     } else {
       setEdit(false);
@@ -161,6 +171,19 @@ function Home(props) {
 
       <Box w="50%" margin="50px 0px 0px 0px">
         <form>
+          {product_images && 
+          product_images[parseInt(props.props.match.params.imageid)] && 
+          product_images[parseInt(props.props.match.params.imageid)].topwear_viewed==="Yes" &&
+          <div style={{fontSize: '18px'}}><b>The topwear is Viewed </b></div>
+          }
+          {(formFields.occluded=="No" && formFields.one_product=="Yes" && formFields.sleeves=="No" && formFields.tuckedIn=="No") && 
+          <Button
+            onClick={() => handleSubmit(true)}
+            variantColor="green"
+            style={{ margin: "10px" }}
+          >
+            Proceed with Default values >>>
+          </Button>}
           <FormControl>
             <FormLabel htmlFor="one_product">
               Is there only one topwear in the image ?
