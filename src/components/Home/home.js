@@ -33,6 +33,11 @@ function Home(props) {
         ? product_images[props.props.match.params.imageid].tuckedIn
         : "No"
       : "No",
+    cloth_parsing: product_images
+      ? product_images[props.props.match.params.imageid]
+        ? product_images[props.props.match.params.imageid].cloth_parsing
+        : "Yes"
+      : "Yes",
     pred_decider: "No",
     extra_pred_decider: "Yes",
   });
@@ -93,7 +98,8 @@ function Home(props) {
         occludedBy: formFields.occluded,
         sleeves: formFields.sleeves,
         tuckedIn: formFields.tuckedIn,
-        one_product: formFields.one_product
+        one_product: formFields.one_product,
+        cloth_parsing: formFields.cloth_parsing
       },
     });
   };
@@ -110,6 +116,14 @@ function Home(props) {
     }
   };
 
+  const linkChange_id = (id) => {
+    return `https://storage.cloud.google.com/naman-bucket/dataset/parsings/${id}_parse_vis.png`
+    if (id === undefined) {
+      return undefined;
+    } else {
+      return `https://storage.googleapis.com/download/storage/v1/b/naman-bucket/o/dataset/parsings/${id}_parse_vis.png?alt=media`;
+    }
+  };
   useEffect(() => {
     if (product_images) {
       setFormFields({
@@ -236,6 +250,18 @@ function Home(props) {
               <option value="No">No</option>
             </Select>
           </FormControl>
+          <FormControl>
+            <FormLabel htmlFor="cloth_parsing"> Does the cloth parsing look reasonable ?</FormLabel>
+            <Select
+              name="cloth_parsing"
+              placeholder="Select option"
+              value={formFields.cloth_parsing}
+              onChange={onInputChange}
+            >
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </Select>
+          </FormControl>
           {/* <Button
             variantColor="green"
             style={{ margin: "10px" }}
@@ -313,6 +339,19 @@ function Home(props) {
             </div>
           </div>
         )}
+      </Box>
+      <Box>
+        <Image
+          style={{margin: '50px 10px 0px 10px'}}
+          src={
+            product_images &&
+            product_images[parseInt(props.props.match.params.imageid)].id &&
+            linkChange_id(
+              product_images[props.props.match.params.imageid].id
+            )
+          }
+          htmlWidth={384}
+        />
       </Box>
     </div>
   );

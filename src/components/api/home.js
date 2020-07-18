@@ -187,6 +187,9 @@ export const CHECK_PRODUCT_ID_CONDITION = gql`
               { item_category: { _eq: "sweatshirts" } }
               { item_category: { _eq: "hoodies" } }
               { item_category: { _eq: "jackets" } }
+              { item_category: { _eq: "dresses" } }
+              { item_category: { _eq: "rompers" } }
+              { item_category: { _eq: "jumpsuits" } }
             ]
           }
         ]
@@ -220,6 +223,7 @@ export const GET_ALL_IMAGES = gql`
       sleeves
       topwear_viewed
       one_product
+      cloth_parsing
     }
   }
 `;
@@ -232,10 +236,11 @@ export const UPDATE_PERSON_DATA = gql`
     $tuckedIn: String!
     $sleeves: String!
     $one_product: String!
+    $cloth_parsing: String!
   ) {
     update_product_images(
       where: { product_id: { _eq: $product_id }, image_id: { _eq: $image_id } }
-      _set: { occludedBy: $occludedBy, tuckedIn: $tuckedIn, sleeves: $sleeves, topwear_viewed: "Yes", one_product: $one_product }
+      _set: { occludedBy: $occludedBy, tuckedIn: $tuckedIn, sleeves: $sleeves, topwear_viewed: "Yes", one_product: $one_product, cloth_parsing :$cloth_parsing }
     ) {
       affected_rows
     }
@@ -258,6 +263,9 @@ export const GET_PRODUCT_ID_HELPER = gql`
               { item_category: { _eq: "sweatshirts" } }
               { item_category: { _eq: "hoodies" } }
               { item_category: { _eq: "jackets" } }
+              { item_category: { _eq: "dresses" } }
+              { item_category: { _eq: "rompers" } }
+              { item_category: { _eq: "jumpsuits" } }
             ]
           }
         ]
