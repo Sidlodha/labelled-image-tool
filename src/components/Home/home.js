@@ -19,10 +19,10 @@ function Home(props) {
         : "No"
       : "No",
     one_product: product_images
-    ? product_images[props.props.match.params.imageid]
-      ? product_images[props.props.match.params.imageid].sleeves
-      : "Yes"
-    : "Yes",
+      ? product_images[props.props.match.params.imageid]
+        ? product_images[props.props.match.params.imageid].sleeves
+        : "Yes"
+      : "Yes",
     sleeves: product_images
       ? product_images[props.props.match.params.imageid]
         ? product_images[props.props.match.params.imageid].sleeves
@@ -72,7 +72,7 @@ function Home(props) {
   const handleSubmit = async (defaultValues = false) => {
     if (
       formFields.occluded != "No" &&
-      formFields.occluded!="Others" && 
+      formFields.occluded != "Others" &&
       !picData &&
       !product_images[parseInt(props.props.match.params.imageid)]
         .segmented_image
@@ -99,7 +99,7 @@ function Home(props) {
         sleeves: formFields.sleeves,
         tuckedIn: formFields.tuckedIn,
         one_product: formFields.one_product,
-        cloth_parsing: formFields.cloth_parsing
+        cloth_parsing: formFields.cloth_parsing,
       },
     });
   };
@@ -117,7 +117,7 @@ function Home(props) {
   };
 
   const linkChange_id = (id) => {
-    return `https://storage.cloud.google.com/naman-bucket/dataset/parsings/${id}_parse_vis.png`
+    return `https://storage.cloud.google.com/naman-bucket/dataset/parsings/${id}_parse_vis.png`;
     if (id === undefined) {
       return undefined;
     } else {
@@ -135,6 +135,8 @@ function Home(props) {
           product_images[props.props.match.params.imageid].sleeves || "No",
         one_product:
           product_images[props.props.match.params.imageid].one_product || "Yes",
+        cloth_parsing:
+          product_images[props.props.match.params.imageid].cloth_parsing || "Yes",
       });
     }
     if (
@@ -148,7 +150,10 @@ function Home(props) {
         tuckedIn:
           product_images[props.props.match.params.imageid].tuckedIn || "",
         sleeves: product_images[props.props.match.params.imageid].sleeves || "",
-        one_product: product_images[props.props.match.params.imageid].one_product || "Yes",
+        one_product:
+          product_images[props.props.match.params.imageid].one_product || "Yes",
+        cloth_parsing:
+          product_images[props.props.match.params.imageid].cloth_parsing || "Yes",
       });
     } else {
       setEdit(false);
@@ -185,19 +190,26 @@ function Home(props) {
 
       <Box w="50%" margin="50px 0px 0px 0px">
         <form>
-          {product_images && 
-          product_images[parseInt(props.props.match.params.imageid)] && 
-          product_images[parseInt(props.props.match.params.imageid)].topwear_viewed==="Yes" &&
-          <div style={{fontSize: '18px'}}><b>The topwear is Viewed </b></div>
-          }
-          {(formFields.occluded=="No" && formFields.one_product=="Yes" && formFields.sleeves=="No" && formFields.tuckedIn=="No") && 
-          <Button
-            onClick={() => handleSubmit(true)}
-            variantColor="green"
-            style={{ margin: "10px" }}
-          >
-            Proceed with Default values >>>
-          </Button>}
+          {product_images &&
+            product_images[parseInt(props.props.match.params.imageid)] &&
+            product_images[parseInt(props.props.match.params.imageid)]
+              .topwear_viewed === "Yes" && (
+              <div style={{ fontSize: "18px" }}>
+                <b>The topwear is Viewed </b>
+              </div>
+            )}
+          {formFields.occluded == "No" &&
+            formFields.one_product == "Yes" &&
+            formFields.sleeves == "No" &&
+            formFields.tuckedIn == "No" && (
+              <Button
+                onClick={() => handleSubmit(true)}
+                variantColor="green"
+                style={{ margin: "10px" }}
+              >
+                Proceed with Default values >>>
+              </Button>
+            )}
           <FormControl>
             <FormLabel htmlFor="one_product">
               Is there only one topwear in the image ?
@@ -251,7 +263,10 @@ function Home(props) {
             </Select>
           </FormControl>
           <FormControl>
-            <FormLabel htmlFor="cloth_parsing"> Does the cloth parsing look reasonable ?</FormLabel>
+            <FormLabel htmlFor="cloth_parsing">
+              {" "}
+              Does the cloth parsing look reasonable ?
+            </FormLabel>
             <Select
               name="cloth_parsing"
               placeholder="Select option"
@@ -291,37 +306,41 @@ function Home(props) {
         </form>
       </Box>
       <Box>
-        {!edit && formFields.occluded && (formFields.occluded != "No" && formFields.occluded!="Others") && (
-          <div style={{ display: "flex" }}>
-            <div>
-              <div>FRONT</div>
-              <ModelOutput
-                image={
-                  product_images &&
-                  product_images[props.props.match.params.imageid].image_url
-                }
-                new_image={
-                  product_images &&
-                  product_images[props.props.match.params.imageid].image_url &&
-                  linkChange(
+        {!edit &&
+          formFields.occluded &&
+          formFields.occluded != "No" &&
+          formFields.occluded != "Others" && (
+            <div style={{ display: "flex" }}>
+              <div>
+                <div>FRONT</div>
+                <ModelOutput
+                  image={
+                    product_images &&
                     product_images[props.props.match.params.imageid].image_url
-                  )
-                }
-                load={product_images && product_images.length > 0}
-                isOccluded={formFields.occluded}
-                pred_decider={"No"}
-                setPicData={setPicData}
-                product_id={parseInt(props.props.match.params.productid)}
-                image_id={
-                  product_images && 
-                  product_images[parseInt(props.props.match.params.imageid)]
-                    .image_id
-                }
-                canvas_name={"canvas_1"}
-              />
+                  }
+                  new_image={
+                    product_images &&
+                    product_images[props.props.match.params.imageid]
+                      .image_url &&
+                    linkChange(
+                      product_images[props.props.match.params.imageid].image_url
+                    )
+                  }
+                  load={product_images && product_images.length > 0}
+                  isOccluded={formFields.occluded}
+                  pred_decider={"No"}
+                  setPicData={setPicData}
+                  product_id={parseInt(props.props.match.params.productid)}
+                  image_id={
+                    product_images &&
+                    product_images[parseInt(props.props.match.params.imageid)]
+                      .image_id
+                  }
+                  canvas_name={"canvas_1"}
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
         {edit && (
           <div style={{ display: "flex", padding: "40px 10px 40px 10px" }}>
             <div>
@@ -342,13 +361,11 @@ function Home(props) {
       </Box>
       <Box>
         <Image
-          style={{margin: '50px 10px 0px 10px'}}
+          style={{ margin: "50px 10px 0px 10px" }}
           src={
             product_images &&
             product_images[parseInt(props.props.match.params.imageid)].id &&
-            linkChange_id(
-              product_images[props.props.match.params.imageid].id
-            )
+            linkChange_id(product_images[props.props.match.params.imageid].id)
           }
           htmlWidth={384}
         />
