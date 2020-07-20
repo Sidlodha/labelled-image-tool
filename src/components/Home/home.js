@@ -70,16 +70,16 @@ function Home(props) {
   };
 
   const handleSubmit = async (defaultValues = false) => {
-    if (
-      formFields.occluded != "No" &&
-      formFields.occluded != "Others" &&
-      !picData &&
-      !product_images[parseInt(props.props.match.params.imageid)]
-        .segmented_image
-    ) {
-      alert("Please save the segmented image.");
-      return;
-    }
+    // if (
+    //   formFields.occluded != "No" &&
+    //   formFields.occluded != "Others" &&
+    //   !picData &&
+    //   !product_images[parseInt(props.props.match.params.imageid)]
+    //     .segmented_image
+    // ) {
+    //   alert("Please save the segmented image.");
+    //   return;
+    // }
     if (
       formFields.occluded == "" ||
       formFields.sleeves == "" ||
@@ -306,7 +306,7 @@ function Home(props) {
         </form>
       </Box>
       <Box>
-        {!edit &&
+        {false && !edit &&
           formFields.occluded &&
           formFields.occluded != "No" &&
           formFields.occluded != "Others" && (
